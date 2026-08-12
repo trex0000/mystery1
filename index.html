@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Inner Circle — Case File No.1: The Wet Umbrella</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181f;
+    --ink-2:#1c2330;
+    --ink-3:#242c3b;
+    --parchment:#f0e6d2;
+    --parchment-2:#e4d5b3;
+    --brass:#b8925a;
+    --brass-light:#d4b483;
+    --rust:#9a3324;
+    --rust-light:#c24a34;
+    --rain:#7c94a8;
+    --ink-text:#241d14;
+    --cream-text:#efe6d0;
+    --green:#4f7a4a;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream-text);
+    font-family:'Lora',Georgia,serif;
+    line-height:1.7;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Special Elite',monospace;
+    letter-spacing:.02em;
+    font-weight:400;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--brass-light);}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--brass-light);outline-offset:3px;}
+
+  /* ===== TOPBAR ===== */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:linear-gradient(180deg,#0f131a 0%, #14181fee 100%);
+    border-bottom:1px solid #33261b;
+    backdrop-filter:blur(6px);
+  }
+  .topbar-inner{
+    max-width:1100px;margin:0 auto;padding:.7rem 1rem;
+    display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+    justify-content:space-between;
+  }
+  .brand{display:flex;align-items:baseline;gap:.6rem;}
+  .brand .mark{color:var(--rust-light);font-size:1.1rem;}
+  .brand-text{font-family:'Special Elite',monospace;font-size:1rem;letter-spacing:.08em;color:var(--parchment);}
+  nav{display:flex;gap:.35rem;flex-wrap:wrap;}
+  nav button{
+    background:transparent;border:1px solid #3b4658;color:var(--cream-text);
+    padding:.45rem .8rem;font-size:.82rem;border-radius:3px;
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.02em;
+    transition:.15s;
+  }
+  nav button:hover{border-color:var(--brass-light);color:var(--brass-light);}
+  nav button.active{background:var(--brass);border-color:var(--brass);color:#1a1206;font-weight:600;}
+
+  main{max-width:1100px;margin:0 auto;padding:0 1rem 4rem;}
+  .view{display:none;animation:fadein .35s ease;}
+  .view.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--rain);margin-bottom:.4rem;
+  }
+  .th-note{color:#a9b3c2;font-size:.88rem;font-style:italic;margin:.2rem 0 1.2rem;}
+
+  /* ===== HERO / HOME ===== */
+  .hero{
+    position:relative;overflow:hidden;
+    background:radial-gradient(ellipse at top, #1b2330 0%, #10141b 70%);
+    border:1px solid #2a3242;border-radius:6px;
+    padding:3.5rem 1.5rem 3rem;margin-top:2rem;text-align:center;
+  }
+  .rain-bg{
+    position:absolute;inset:0;pointer-events:none;opacity:.35;
+    background-image:repeating-linear-gradient(112deg, transparent 0 2px, rgba(180,200,220,.55) 2px 3px, transparent 3px 42px);
+    animation:rainfall .45s linear infinite;
+  }
+  @keyframes rainfall{from{background-position:0 0;}to{background-position:-42px 220px;}}
+  .hero-content{position:relative;z-index:1;}
+  .stamp{
+    display:inline-block;border:2px solid var(--rust-light);color:var(--rust-light);
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.2em;
+    padding:.25rem .7rem;border-radius:2px;transform:rotate(-3deg);margin-bottom:1.4rem;
+  }
+  .hero h1{
+    font-size:clamp(1.9rem,5vw,3.1rem);color:var(--parchment);margin:.2rem 0 .6rem;
+    overflow:hidden;white-space:nowrap;border-right:.14em solid var(--brass-light);
+    display:inline-block;max-width:100%;
+    animation:typing 2.1s steps(20,end) 1, blink .75s step-end infinite;
+  }
+  @keyframes typing{from{width:0;}to{width:15.6ch;}}
+  @keyframes blink{50%{border-color:transparent;}}
+  .hero .subtitle{color:var(--rain);font-family:'IBM Plex Mono',monospace;font-size:.95rem;letter-spacing:.05em;}
+  .hero p.lead{max-width:560px;margin:1.4rem auto 0;color:#cdd4de;}
+  .cta-row{margin-top:2rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    border:none;border-radius:4px;padding:.75rem 1.4rem;font-size:.95rem;
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;font-weight:600;
+    transition:.15s transform ease, .15s box-shadow ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--brass);color:#1a1206;}
+  .btn-primary:hover{box-shadow:0 6px 16px rgba(184,146,90,.35);}
+  .btn-ghost{background:transparent;border:1px solid var(--rain);color:var(--parchment);}
+  .btn-danger{background:var(--rust);color:#fff2ec;}
+  .btn-danger:hover{box-shadow:0 6px 16px rgba(154,51,36,.35);}
+
+  .howto{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1rem;margin-top:2.4rem;text-align:left;
+  }
+  .howto .step{
+    background:var(--ink-2);border:1px solid #2a3242;border-radius:6px;padding:1rem 1.1rem;
+  }
+  .howto .step .num{font-family:'IBM Plex Mono',monospace;color:var(--rust-light);font-size:.78rem;letter-spacing:.1em;}
+  .howto .step h3{margin:.3rem 0 .3rem;font-size:1.02rem;color:var(--parchment);}
+  .howto .step p{margin:0;font-size:.88rem;color:#b7c0cc;}
+
+  /* ===== SECTION HEADERS ===== */
+  .section-head{margin:2.6rem 0 1.4rem;}
+  .section-head h2{font-size:1.7rem;color:var(--parchment);margin:.2rem 0;}
+  .divider{border:none;border-top:1px dashed #3b4658;margin:1.6rem 0;}
+
+  /* ===== CASE BRIEF ===== */
+  .case-paper{
+    background:var(--parchment);color:var(--ink-text);
+    border-radius:4px;padding:2rem clamp(1.2rem,4vw,2.6rem);
+    box-shadow:var(--shadow);
+    background-image:linear-gradient(var(--parchment-2) 1px, transparent 1px);
+    background-size:100% 2.15em;
+  }
+  .case-paper p{margin:0 0 1.1em;font-size:1.03rem;}
+  .case-paper .quote-hook{
+    margin-top:1.4rem;padding-top:1.2rem;border-top:1px dashed #c9b98f;
+    font-style:italic;color:#4a3d26;
+  }
+  .vocab{
+    border-bottom:2px dotted var(--rust);cursor:pointer;font-weight:600;
+    color:inherit;padding:0 1px;
+  }
+  .vocab:hover{background:rgba(154,51,36,.1);}
+
+  /* ===== SUSPECTS ===== */
+  .suspect-grid{display:grid;gap:1.4rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+  .suspect-card{
+    background:var(--parchment);color:var(--ink-text);border-radius:6px;
+    box-shadow:var(--shadow);overflow:hidden;border:1px solid #d8c7a0;
+  }
+  .suspect-top{
+    padding:1.2rem 1.3rem 1rem;display:flex;gap:.9rem;align-items:center;
+    border-bottom:1px solid #d8c7a0;background:var(--parchment-2);
+  }
+  .avatar{
+    width:52px;height:52px;border-radius:50%;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Special Elite',monospace;font-size:1.05rem;color:#fff;
+    border:2px solid #00000022;
+  }
+  .a1{background:#6c5638;} .a2{background:#7a4a3a;} .a3{background:#4a5c6c;}
+  .suspect-name{margin:0;font-size:1.08rem;}
+  .suspect-role{font-family:'IBM Plex Mono',monospace;font-size:.76rem;letter-spacing:.05em;color:#5a4a2e;}
+  .suspect-body{padding:1.1rem 1.3rem 1.3rem;}
+  .time-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem;}
+  .time-tag{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;background:#fff8ea;
+    border:1px solid #d8c7a0;padding:.2rem .5rem;border-radius:3px;color:#4a3d26;
+  }
+  .narration{font-style:italic;font-size:.92rem;color:#5a4d38;margin:.6rem 0;}
+  blockquote{
+    margin:.6rem 0;padding:.7rem .9rem;border-left:3px solid var(--rust);
+    background:#fffaf0;font-size:.98rem;
+  }
+
+  /* ===== EVIDENCE ROOM ===== */
+  .notebook{
+    background:var(--ink-2);border:1px solid #2a3242;border-radius:6px;
+    padding:1.4rem 1.5rem;margin-bottom:1.6rem;
+  }
+  .notebook h3{margin-top:0;color:var(--parchment);font-size:1.1rem;}
+  .notebook ul{margin:.6rem 0 0;padding-left:1.2rem;color:#c4cdd8;}
+  .notebook li{margin-bottom:.5rem;font-size:.95rem;}
+
+  .game-card{
+    background:var(--ink-2);border:1px solid #2a3242;border-radius:6px;
+    padding:1.5rem;margin-bottom:1.8rem;
+  }
+  .game-card h3{margin-top:0;color:var(--parchment);}
+  .game-sub{color:#a9b3c2;font-size:.88rem;margin-top:-.4rem;margin-bottom:1rem;}
+
+  .pool, .sequence{
+    display:flex;flex-wrap:wrap;gap:.5rem;min-height:46px;
+    padding:.6rem;border:1px dashed #3b4658;border-radius:6px;background:var(--ink);
+  }
+  .sequence{margin-top:.7rem;}
+  .chip{
+    background:var(--brass);color:#1a1206;border:none;border-radius:4px;
+    padding:.5rem .7rem;font-size:.82rem;font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+  }
+  .chip.placed{background:var(--ink-3);color:var(--cream-text);border:1px solid var(--brass);}
+  .chip.correct{background:var(--green);color:#fff;}
+  .chip.wrong{background:var(--rust);color:#fff;}
+  .slot-num{opacity:.6;margin-right:.35rem;}
+  .game-actions{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap;}
+  .feedback{margin-top:.9rem;font-family:'IBM Plex Mono',monospace;font-size:.88rem;color:var(--brass-light);min-height:1.4em;}
+
+  .quiz-q{margin-bottom:1.3rem;}
+  .quiz-q p{font-weight:600;color:var(--parchment);margin-bottom:.5rem;}
+  .quiz-opt{
+    display:block;width:100%;text-align:left;background:var(--ink);
+    border:1px solid #3b4658;color:var(--cream-text);border-radius:5px;
+    padding:.55rem .8rem;margin-bottom:.45rem;font-size:.92rem;transition:.15s;
+  }
+  .quiz-opt:hover{border-color:var(--brass-light);}
+  .quiz-opt.correct{background:rgba(79,122,74,.35);border-color:var(--green);}
+  .quiz-opt.wrong{background:rgba(154,51,36,.3);border-color:var(--rust);}
+  .quiz-score{font-family:'IBM Plex Mono',monospace;color:var(--brass-light);margin-top:.6rem;}
+
+  /* ===== VOCAB FLASHCARDS ===== */
+  .flash-grid{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+  .flip-card{perspective:900px;height:100px;}
+  .flip-inner{
+    position:relative;width:100%;height:100%;transition:transform .5s;
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-front,.flip-back{
+    position:absolute;inset:0;backface-visibility:hidden;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    padding:.6rem;font-size:.86rem;
+  }
+  .flip-front{background:var(--ink-2);border:1px solid var(--brass);color:var(--parchment);font-weight:600;}
+  .flip-back{background:var(--brass);color:#1a1206;transform:rotateY(180deg);flex-direction:column;gap:.15rem;}
+  .flip-back .th{font-size:.95rem;font-weight:700;}
+  .flip-back .def{font-size:.72rem;font-style:italic;}
+
+  /* ===== ACCUSE ===== */
+  .accuse-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:1.2rem;}
+  .accuse-btn{
+    background:var(--parchment);color:var(--ink-text);border:1px solid #d8c7a0;
+    border-radius:6px;padding:1.1rem;text-align:left;box-shadow:var(--shadow);
+  }
+  .accuse-btn:hover{outline:2px solid var(--rust);}
+  .accuse-btn .suspect-name{margin-bottom:.15rem;}
+  .hints{margin-top:1.6rem;}
+  .hint-box{
+    background:var(--ink-2);border:1px dashed var(--brass);border-radius:6px;
+    padding:.8rem 1rem;margin-top:.6rem;font-size:.9rem;color:var(--parchment);
+  }
+
+  /* ===== MODAL / POPOVER ===== */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,12,16,.7);
+    display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;
+  }
+  .modal{
+    background:var(--parchment);color:var(--ink-text);border-radius:8px;
+    max-width:420px;width:100%;padding:1.6rem;box-shadow:var(--shadow);text-align:center;
+  }
+  .modal h3{margin-top:0;font-family:'Special Elite',monospace;}
+  .modal .row{display:flex;gap:.7rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;}
+  .stamp-result{
+    display:inline-block;border:3px solid;padding:.4rem 1rem;font-family:'Special Elite',monospace;
+    letter-spacing:.1em;transform:rotate(-4deg);margin-bottom:.8rem;font-size:1.1rem;
+  }
+  .stamp-win{color:var(--green);border-color:var(--green);}
+  .stamp-lose{color:var(--rust);border-color:var(--rust);}
+
+  .popover{
+    position:absolute;z-index:60;max-width:240px;background:var(--brass);
+    color:#1a1206;border-radius:6px;padding:.6rem .8rem;box-shadow:var(--shadow);
+    font-size:.85rem;
+  }
+  .popover .th{font-weight:700;font-size:.95rem;display:block;margin-bottom:.15rem;font-family:'Lora',serif;}
+  .popover .def{font-style:italic;font-size:.78rem;}
+  .popover .close{
+    position:absolute;top:2px;right:6px;background:none;border:none;color:#1a1206;
+    font-size:.9rem;font-weight:700;
+  }
+
+  footer{
+    text-align:center;padding:2rem 1rem;color:#5c6675;font-family:'IBM Plex Mono',monospace;
+    font-size:.78rem;border-top:1px solid #2a3242;margin-top:2rem;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .rain-bg{animation:none;}
+    .hero h1{animation:none;width:auto;border-right:none;white-space:normal;}
+    .view{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="mark">☂</span><span class="brand-text">THE INNER CIRCLE</span></div>
+    <nav id="mainNav">
+      <button data-view="home" class="active">Home</button>
+      <button data-view="case">The Case</button>
+      <button data-view="suspects">Suspects</button>
+      <button data-view="evidence">Evidence Room</button>
+      <button data-view="vocab">Vocabulary</button>
+      <button data-view="accuse">Accuse</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section id="home" class="view active">
+    <div class="hero">
+      <div class="rain-bg" aria-hidden="true"></div>
+      <div class="hero-content">
+        <span class="stamp">CONFIDENTIAL</span>
+        <h1>THE WET UMBRELLA</h1>
+        <div class="subtitle">CASE FILE No. 1 — DETECTIVE VANCE, INVESTIGATING</div>
+        <p class="lead">Lord Harrington is dead. Three visitors walked through his door this afternoon — and one of them is lying. Read the case, question the suspects, and find the truth hidden in their own words.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" data-view="case">Begin Investigation →</button>
+          <button class="btn btn-ghost" data-view="vocab">Vocabulary Bank</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div class="eyebrow">How to play · วิธีเล่น</div>
+      <h2>Your job, Detective</h2>
+      <p class="th-note">อ่านคดี สัมภาษณ์ผู้ต้องสงสัย เก็บหลักฐานจากคำให้การ แล้วชี้ตัวฆาตกร — คำตอบไม่ได้บอกตรงๆ ต้องอ่านให้ละเอียด!</p>
+    </div>
+    <div class="howto">
+      <div class="step"><div class="num">01</div><h3>Read the case</h3><p>Start with the case brief to learn what happened at Foxglove Manor.</p></div>
+      <div class="step"><div class="num">02</div><h3>Question the suspects</h3><p>Read all three testimonies carefully. Every word matters.</p></div>
+      <div class="step"><div class="num">03</div><h3>Search for clues</h3><p>Visit the Evidence Room, answer the notebook questions, and play the mini-games.</p></div>
+      <div class="step"><div class="num">04</div><h3>Make your accusation</h3><p>When you're ready, name the killer — and be ready to explain why!</p></div>
+    </div>
+  </section>
+
+  <!-- ============ THE CASE ============ -->
+  <section id="case" class="view">
+    <div class="section-head">
+      <div class="eyebrow">Case Brief</div>
+      <h2>What happened at Foxglove Manor</h2>
+      <p class="th-note">อ่านเรื่องราวการค้นพบศพ — คลิกคำที่ขีดเส้นใต้เพื่อดูคำแปล</p>
+    </div>
+    <article class="case-paper">
+      <p>The rain began just after two o'clock and never let up. By mid-afternoon, Foxglove Manor sat behind a grey curtain of water, its tall windows rattling with every gust of wind.</p>
+
+      <p>Lord Harrington, a <span class="vocab" data-term="wealthy">wealthy</span> <span class="vocab" data-term="art-collector">art collector</span>, had spent the morning in unusually good spirits. He told his <span class="vocab" data-term="housekeeper">housekeeper</span>, Mrs. Pratt, that he was expecting "three old friends" that afternoon — though anyone who knew Lord Harrington understood that "friend" was a generous word for a man who trusted almost no one with his money, his paintings, or his opinions.</p>
+
+      <p>At 4:15 PM, Mrs. Pratt carried a tray of tea down the long <span class="vocab" data-term="hallway">hallway</span> toward the private study, only to find the door <span class="vocab" data-term="ajar">ajar</span> and Lord Harrington slumped over his desk, <span class="vocab" data-term="motionless">motionless</span>. She dropped the tray and screamed for the telephone.</p>
+
+      <p>By 4:30 PM, Detective Vance stood in the doorway of the study, rain still dripping from the hem of her coat. The room told its own story: <span class="vocab" data-term="overturned">overturned</span> books, a <span class="vocab" data-term="shattered">shattered</span> vase, and Lord Harrington's most treasured painting gone from the wall above the fireplace.</p>
+
+      <p>The <span class="vocab" data-term="medical-examiner">medical examiner</span> was quick with his estimate: Lord Harrington had been killed sometime between 3:00 PM and 4:00 PM — squarely in the middle of the afternoon's heaviest <span class="vocab" data-term="downpour">downpour</span>.</p>
+
+      <p>Detective Vance opened her notebook. According to Mrs. Pratt, exactly three visitors had come to Foxglove Manor that day, each one walking the same long hallway of <span class="vocab" data-term="polished">polished</span> hardwood floors to reach the study door. Three different reasons. Three different stories. Detective Vance settled into a chair by the fire and began, one by one, to hear them out.</p>
+
+      <p class="quote-hook">Three visitors. Three umbrellas. Three stories that don't quite match. The hallway remembers more than any of them think, Detective. Who really walked through that door — and who is lying about it?</p>
+    </article>
+    <div class="cta-row" style="margin-top:1.6rem;">
+      <button class="btn btn-primary" data-view="suspects">Interview the Suspects →</button>
+    </div>
+  </section>
+
+  <!-- ============ SUSPECTS ============ -->
+  <section id="suspects" class="view">
+    <div class="section-head">
+      <div class="eyebrow">Interview Room</div>
+      <h2>Three visitors, three stories</h2>
+      <p class="th-note">อ่านคำให้การของผู้ต้องสงสัยทั้งสามคนอย่างละเอียด — เวลาและรายละเอียดเล็กๆ สำคัญมาก</p>
+    </div>
+    <div class="suspect-grid">
+
+      <div class="suspect-card">
+        <div class="suspect-top">
+          <div class="avatar a1">AP</div>
+          <div>
+            <h3 class="suspect-name">Arthur Pendelton</h3>
+            <div class="suspect-role"><span class="vocab" data-term="financial-advisor">FINANCIAL ADVISOR</span></div>
+          </div>
+        </div>
+        <div class="suspect-body">
+          <div class="time-tags"><span class="time-tag">Arrived 2:15 PM</span><span class="time-tag">To Garden Room 2:50 PM</span></div>
+          <p class="narration">Detective Vance's pen hovered over her notebook as the first visitor took a seat, straightening his tie before he spoke a word.</p>
+          <blockquote>"I arrived at 2:15 PM, well before the rain started. Lord Harrington and I talked about his money until 2:50 PM. Then I went to the glass garden room to read my <span class="vocab" data-term="documents">documents</span>. I stayed there the whole time and didn't hear anything until the police arrived."</blockquote>
+          <p class="narration">Detective Vance made a small note beside his name and gestured for the next visitor to come in.</p>
+        </div>
+      </div>
+
+      <div class="suspect-card">
+        <div class="suspect-top">
+          <div class="avatar a2">BV</div>
+          <div>
+            <h3 class="suspect-name">Beatrice Vance</h3>
+            <div class="suspect-role"><span class="vocab" data-term="restorer">ART RESTORER</span></div>
+          </div>
+        </div>
+        <div class="suspect-body">
+          <div class="time-tags"><span class="time-tag">Arrived 3:15 PM</span><span class="time-tag">Left the study ~3:25 PM</span></div>
+          <p class="narration">The second visitor arrived still wrapped in a damp coat, her fingertips faintly stained with paint.</p>
+          <blockquote>"I drove through the heavy rain and arrived at 3:15 PM. As soon as I entered the main door, I put my <span class="vocab" data-term="dripping">dripping</span> wet umbrella into the stand in the entrance hall. I <span class="vocab" data-term="immediately">immediately</span> walked down the long hallway to the study to deliver a painting. Lord Harrington was alive when I left ten minutes later."</blockquote>
+          <p class="narration">Detective Vance tapped her pen twice against the notebook — a small habit of hers whenever a detail seemed a little too tidy — and thanked her.</p>
+        </div>
+      </div>
+
+      <div class="suspect-card">
+        <div class="suspect-top">
+          <div class="avatar a3">CM</div>
+          <div>
+            <h3 class="suspect-name">Charles Montgomery</h3>
+            <div class="suspect-role"><span class="vocab" data-term="architect">ARCHITECT</span></div>
+          </div>
+        </div>
+        <div class="suspect-body">
+          <div class="time-tags"><span class="time-tag">Arrived 3:45 PM</span><span class="time-tag">Left 4:00 PM</span></div>
+          <p class="narration">The last visitor entered looking, if anything, the most <span class="vocab" data-term="soaked">soaked</span> of the three, his coat sleeves dark with rain.</p>
+          <blockquote>"I arrived at 3:45 PM while it was raining very heavily outside. I was soaked when I reached the door. My umbrella is a very expensive <span class="vocab" data-term="antique">antique</span>, so I didn't want to leave it at the front door. Therefore, I kept it folded, held it pointing down by my side, and walked straight down the long hardwood hallway to his study. I left at 4:00 PM."</blockquote>
+          <p class="narration">Detective Vance closed her notebook slowly and looked toward the long hallway outside the study door, now quiet except for the rain against the windows.</p>
+        </div>
+      </div>
+
+    </div>
+    <div class="cta-row" style="margin-top:1.8rem;">
+      <button class="btn btn-primary" data-view="evidence">Go to Evidence Room →</button>
+    </div>
+  </section>
+
+  <!-- ============ EVIDENCE ROOM ============ -->
+  <section id="evidence" class="view">
+    <div class="section-head">
+      <div class="eyebrow">Evidence Room</div>
+      <h2>Notes, clues &amp; challenges</h2>
+      <p class="th-note">ตอบคำถามในสมุดโน้ตของนักสืบ แล้วลองเล่นเกมเรียงเวลาและควิซทบทวนความเข้าใจ</p>
+    </div>
+
+    <div class="notebook">
+      <h3 class="mono">🔎 Detective Vance's Notebook</h3>
+      <ul>
+        <li>Compare Beatrice's and Charles's arrival stories. What's different about what they did with their umbrellas?</li>
+        <li>The hallway floor is described as "clean, polished hardwood." Why might that detail matter?</li>
+        <li>Whose alibi has no witness at all?</li>
+        <li>Does everyone's story fit inside the murder window of 3:00–4:00 PM?</li>
+      </ul>
+    </div>
+
+    <div class="game-card">
+      <h3>🕰️ Mini-Game: Build the Timeline</h3>
+      <p class="game-sub">Click events in the correct order, then press "Check Order."</p>
+      <div class="pool" id="timelinePool"></div>
+      <div class="sequence" id="timelineSeq"></div>
+      <div class="game-actions">
+        <button class="btn btn-primary" id="checkTimeline">Check Order</button>
+        <button class="btn btn-ghost" id="resetTimeline">Reset</button>
+      </div>
+      <div class="feedback" id="timelineFeedback" aria-live="polite"></div>
+    </div>
+
+    <div class="game-card">
+      <h3>📝 Mini-Game: Quick Quiz</h3>
+      <p class="game-sub">Test your reading comprehension. Pick one answer for each question.</p>
+      <div id="quizContainer"></div>
+      <div class="quiz-score" id="quizScore" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============ VOCAB ============ -->
+  <section id="vocab" class="view">
+    <div class="section-head">
+      <div class="eyebrow">Vocabulary Bank</div>
+      <h2>Flip the cards to review</h2>
+      <p class="th-note">คลิกที่การ์ดเพื่อดูคำแปลภาษาไทยและความหมาย</p>
+    </div>
+    <div class="flash-grid" id="flashGrid"></div>
+  </section>
+
+  <!-- ============ ACCUSE ============ -->
+  <section id="accuse" class="view">
+    <div class="section-head">
+      <div class="eyebrow">Final Step</div>
+      <h2>Who killed Lord Harrington?</h2>
+      <p class="th-note">เมื่อพร้อมแล้ว เลือกผู้ต้องสงสัยที่คุณคิดว่าเป็นฆาตกร — และเตรียมอธิบายเหตุผลให้เพื่อนในทีมฟัง!</p>
+    </div>
+    <div class="accuse-grid">
+      <button class="accuse-btn" data-suspect="arthur"><h3 class="suspect-name">Arthur Pendelton</h3><div class="suspect-role">Financial Advisor</div></button>
+      <button class="accuse-btn" data-suspect="beatrice"><h3 class="suspect-name">Beatrice Vance</h3><div class="suspect-role">Art Restorer</div></button>
+      <button class="accuse-btn" data-suspect="charles"><h3 class="suspect-name">Charles Montgomery</h3><div class="suspect-role">Architect</div></button>
+    </div>
+
+    <div class="hints">
+      <button class="btn btn-ghost" id="hint1btn">Need a clue? Reveal Hint 1</button>
+      <button class="btn btn-ghost" id="hint2btn" style="display:none;">Reveal Hint 2</button>
+      <div id="hint1box" class="hint-box" style="display:none;">Hint 1: Look closely at what each visitor did with their umbrella the moment they came in from the rain.</div>
+      <div id="hint2box" class="hint-box" style="display:none;">Hint 2: One suspect's umbrella never left their hand — all the way down a long, polished hallway.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Detective Vance's Case Files · For classroom reading practice · The Inner Circle</footer>
+
+<div class="popover" id="vocabPopover" hidden></div>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script>
+/* ---------- NAV ---------- */
+const views = document.querySelectorAll('.view');
+const navButtons = document.querySelectorAll('#mainNav button');
+function showView(id){
+  views.forEach(v=>v.classList.toggle('active', v.id===id));
+  navButtons.forEach(b=>b.classList.toggle('active', b.dataset.view===id));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('[data-view]').forEach(el=>{
+  el.addEventListener('click', ()=> showView(el.dataset.view));
+});
+
+/* ---------- VOCAB DATA ---------- */
+const VOCAB = {
+  'wealthy': {en:'wealthy', th:'ร่ำรวย', def:'having a lot of money'},
+  'art-collector': {en:'art collector', th:'นักสะสมงานศิลปะ', def:'a person who collects paintings and artworks'},
+  'housekeeper': {en:'housekeeper', th:'แม่บ้าน', def:'a person who manages the cleaning and running of a house'},
+  'ajar': {en:'ajar', th:'เปิดแง้ม', def:'(a door) slightly open'},
+  'motionless': {en:'motionless', th:'นิ่งไม่ขยับ', def:'not moving at all'},
+  'overturned': {en:'overturned', th:'ถูกคว่ำ / ล้ม', def:'turned upside down or knocked over'},
+  'shattered': {en:'shattered', th:'แตกละเอียด', def:'broken suddenly into many small pieces'},
+  'medical-examiner': {en:'medical examiner', th:'แพทย์นิติเวช', def:'a doctor who examines a body to find the cause of death'},
+  'downpour': {en:'downpour', th:'ฝนตกหนัก', def:'a sudden, very heavy fall of rain'},
+  'hallway': {en:'hallway', th:'ทางเดิน', def:'a long passage inside a building'},
+  'polished': {en:'polished', th:'ขัดเงา', def:'made smooth and shiny by rubbing'},
+  'financial-advisor': {en:'financial advisor', th:'ที่ปรึกษาทางการเงิน', def:'a person who gives advice about money and investments'},
+  'restorer': {en:'restorer', th:'ผู้บูรณะงานศิลปะ', def:'someone whose job is to repair old or damaged art'},
+  'architect': {en:'architect', th:'สถาปนิก', def:'a person who designs buildings'},
+  'soaked': {en:'soaked', th:'เปียกโชก', def:'extremely wet, completely soaked with water'},
+  'dripping': {en:'dripping', th:'หยดน้ำ', def:'liquid falling in small drops'},
+  'antique': {en:'antique', th:'ของโบราณ', def:'an old and often valuable object'},
+  'documents': {en:'documents', th:'เอกสาร', def:'official papers with written or printed information'},
+  'immediately': {en:'immediately', th:'ทันที', def:'right away, without any delay'}
+};
+
+/* ---------- VOCAB POPOVER ---------- */
+const popover = document.getElementById('vocabPopover');
+function showPopover(el, term){
+  const data = VOCAB[term];
+  if(!data) return;
+  popover.innerHTML = `<button class="close" aria-label="close">×</button><span class="th">${data.th}</span><span class="def">${data.def}</span>`;
+  popover.hidden = false;
+  const rect = el.getBoundingClientRect();
+  let left = rect.left + window.scrollX;
+  const top = rect.bottom + window.scrollY + 8;
+  const maxLeft = window.scrollX + window.innerWidth - 260;
+  left = Math.max(window.scrollX + 8, Math.min(left, maxLeft));
+  popover.style.left = left + 'px';
+  popover.style.top = top + 'px';
+  popover.querySelector('.close').addEventListener('click', ()=> popover.hidden = true);
+}
+document.addEventListener('click', (e)=>{
+  const target = e.target.closest('.vocab');
+  if(target){
+    showPopover(target, target.dataset.term);
+    e.stopPropagation();
+  } else if(!e.target.closest('.popover')){
+    popover.hidden = true;
+  }
+});
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') popover.hidden = true; });
+
+/* ---------- FLASHCARDS ---------- */
+const flashGrid = document.getElementById('flashGrid');
+Object.keys(VOCAB).forEach(key=>{
+  const d = VOCAB[key];
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `<div class="flip-inner">
+      <div class="flip-front">${d.en}</div>
+      <div class="flip-back"><span class="th">${d.th}</span><span class="def">${d.def}</span></div>
+    </div>`;
+  card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+  flashGrid.appendChild(card);
+});
+
+/* ---------- TIMELINE GAME ---------- */
+const events = [
+  {id:'e1', text:'Arthur Pendelton arrives and begins talking about money with Lord Harrington.'},
+  {id:'e2', text:'Arthur leaves for the glass garden room to read his documents.'},
+  {id:'e3', text:'The storm reaches its heaviest — the murder window begins.'},
+  {id:'e4', text:'Beatrice Vance arrives, soaked from the heavy rain.'},
+  {id:'e5', text:'Beatrice leaves the study; Lord Harrington is still alive.'},
+  {id:'e6', text:'Charles Montgomery arrives, carrying his wet umbrella with him.'},
+  {id:'e7', text:'Charles leaves Foxglove Manor.'},
+  {id:'e8', text:'Mrs. Pratt discovers Lord Harrington\u2019s body.'},
+  {id:'e9', text:'Detective Vance arrives to begin the investigation.'}
+];
+const correctOrder = events.map(e=>e.id);
+let pool = [];
+let sequence = [];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function renderTimeline(){
+  const poolEl = document.getElementById('timelinePool');
+  const seqEl = document.getElementById('timelineSeq');
+  poolEl.innerHTML = '';
+  seqEl.innerHTML = '';
+  pool.forEach(id=>{
+    const ev = events.find(e=>e.id===id);
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = ev.text;
+    btn.addEventListener('click', ()=>{
+      pool = pool.filter(p=>p!==id);
+      sequence.push(id);
+      renderTimeline();
+    });
+    poolEl.appendChild(btn);
+  });
+  if(sequence.length===0){
+    seqEl.innerHTML = '<span class="mono" style="color:#6b7688;font-size:.82rem;">Click events above to add them here, in order →</span>';
+  }
+  sequence.forEach((id,idx)=>{
+    const ev = events.find(e=>e.id===id);
+    const btn = document.createElement('button');
+    btn.className = 'chip placed';
+    btn.innerHTML = `<span class="slot-num">${idx+1}.</span>${ev.text}`;
+    btn.addEventListener('click', ()=>{
+      sequence = sequence.filter(s=>s!==id);
+      pool.push(id);
+      renderTimeline();
+    });
+    seqEl.appendChild(btn);
+  });
+}
+function resetTimeline(){
+  pool = shuffle(events.map(e=>e.id));
+  sequence = [];
+  document.getElementById('timelineFeedback').textContent = '';
+  renderTimeline();
+}
+document.getElementById('checkTimeline').addEventListener('click', ()=>{
+  const fb = document.getElementById('timelineFeedback');
+  if(sequence.length !== correctOrder.length){
+    fb.textContent = `Place all ${correctOrder.length} events in the sequence first.`;
+    return;
+  }
+  let correctCount = 0;
+  const seqEl = document.getElementById('timelineSeq');
+  [...seqEl.children].forEach((chip, idx)=>{
+    if(sequence[idx] === correctOrder[idx]){
+      chip.classList.add('correct'); chip.classList.remove('wrong');
+      correctCount++;
+    } else {
+      chip.classList.add('wrong'); chip.classList.remove('correct');
+    }
+  });
+  fb.textContent = correctCount === correctOrder.length
+    ? `Perfect! ${correctCount}/${correctOrder.length} correct — the timeline is complete.`
+    : `${correctCount}/${correctOrder.length} correct. Check the red events and try again.`;
+});
+document.getElementById('resetTimeline').addEventListener('click', resetTimeline);
+resetTimeline();
+
+/* ---------- QUIZ GAME ---------- */
+const quiz = [
+  {q:'What is Lord Harrington known for collecting?', options:['Paintings and art','Stamps','Coins','Old books'], correct:0},
+  {q:'What time was Lord Harrington\u2019s body discovered?', options:['3:45 PM','4:00 PM','4:15 PM','4:30 PM'], correct:2},
+  {q:'Where did Arthur Pendelton go after speaking with Lord Harrington?', options:['The kitchen','The glass garden room','Upstairs to bed','He left the manor'], correct:1},
+  {q:'What did Beatrice do with her umbrella when she arrived?', options:['Left it in her car','Put it in the umbrella stand by the door','Carried it into the study','Gave it to the housekeeper'], correct:1},
+  {q:'Why did Charles say he kept his umbrella with him?', options:['He forgot the umbrella stand was there','It was raining too hard to leave it','It is a valuable antique','He wanted to give it to Lord Harrington'], correct:2}
+];
+let quizScore = 0;
+let quizAnswered = 0;
+const quizContainer = document.getElementById('quizContainer');
+quiz.forEach((item, qi)=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'quiz-q';
+  const p = document.createElement('p');
+  p.textContent = `${qi+1}. ${item.q}`;
+  wrap.appendChild(p);
+  item.options.forEach((opt, oi)=>{
+    const b = document.createElement('button');
+    b.className = 'quiz-opt';
+    b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(b.classList.contains('correct') || b.classList.contains('wrong')) return;
+      const buttons = wrap.querySelectorAll('.quiz-opt');
+      buttons.forEach(x=>x.disabled=true);
+      if(oi === item.correct){
+        b.classList.add('correct');
+        quizScore++;
+      } else {
+        b.classList.add('wrong');
+        buttons[item.correct].classList.add('correct');
+      }
+      quizAnswered++;
+      document.getElementById('quizScore').textContent = `Score: ${quizScore}/${quiz.length} (${quizAnswered}/${quiz.length} answered)`;
+    });
+    wrap.appendChild(b);
+  });
+  quizContainer.appendChild(wrap);
+});
+
+/* ---------- ACCUSE GAME ---------- */
+const ANSWER = 'charles';
+const modalOverlay = document.getElementById('modalOverlay');
+const modalBox = document.getElementById('modalBox');
+function openModal(html){ modalBox.innerHTML = html; modalOverlay.hidden = false; }
+function closeModal(){ modalOverlay.hidden = true; }
+modalOverlay.addEventListener('click', (e)=>{ if(e.target===modalOverlay) closeModal(); });
+
+document.querySelectorAll('.accuse-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const suspect = btn.dataset.suspect;
+    const name = btn.querySelector('.suspect-name').textContent;
+    openModal(`
+      <h3>Confirm Your Accusation</h3>
+      <p>Are you sure, Detective? You are about to accuse <strong>${name}</strong> of the murder of Lord Harrington.</p>
+      <div class="row">
+        <button class="btn btn-danger" id="confirmYes">Yes, Arrest Them</button>
+        <button class="btn btn-ghost" id="confirmNo">No, Keep Investigating</button>
+      </div>
+    `);
+    document.getElementById('confirmNo').addEventListener('click', closeModal);
+    document.getElementById('confirmYes').addEventListener('click', ()=>{
+      if(suspect === ANSWER){
+        openModal(`
+          <div class="stamp-result stamp-win">CASE CLOSED</div>
+          <h3>Well done, Detective.</h3>
+          <p>${name} is arrested. But an arrest isn't a full report — Detective Vance still needs your reasoning. Can you explain, using details from the testimonies, exactly why this story doesn't add up?</p>
+          <div class="row"><button class="btn btn-primary" id="closeFinal">Close</button></div>
+        `);
+      } else {
+        openModal(`
+          <div class="stamp-result stamp-lose">CASE STILL OPEN</div>
+          <h3>Not quite, Detective.</h3>
+          <p>${name} is released — the evidence doesn't hold up. Go back to the testimonies and compare them side by side. What does each person say about their umbrella?</p>
+          <div class="row"><button class="btn btn-primary" id="closeFinal">Back to Investigation</button></div>
+        `);
+      }
+      document.getElementById('closeFinal').addEventListener('click', closeModal);
+    });
+  });
+});
+
+document.getElementById('hint1btn').addEventListener('click', ()=>{
+  document.getElementById('hint1box').style.display = 'block';
+  document.getElementById('hint1btn').style.display = 'none';
+  document.getElementById('hint2btn').style.display = 'inline-block';
+});
+document.getElementById('hint2btn').addEventListener('click', ()=>{
+  document.getElementById('hint2box').style.display = 'block';
+  document.getElementById('hint2btn').style.display = 'none';
+});
+</script>
+</body>
+</html>
